@@ -2,6 +2,7 @@ package cl.uchile.dcc
 package units
 
 import scala.collection.mutable.ListBuffer
+import items.{Usable, Weapon}
 
 /** Represents a generic game unit */
 trait GameUnit:
@@ -14,8 +15,8 @@ trait GameUnit:
 
 /** Represents a controllable character in the game */
 trait Character extends GameUnit:
-  def weaponSlot: Option[Any]
-  def inventory: List[Any]
+  def weaponSlot: Option[Weapon]
+  def inventory: List[Usable]
 
 /** Represents a magic-user character */
 trait MagicCharacter extends Character:
@@ -33,8 +34,8 @@ abstract class AbstractCharacter(
   private var _currentHp: Int = maxHp
   override def currentHp: Int = _currentHp
   override def isDefeated: Boolean = _currentHp <= 0
-  override def weaponSlot: Option[Any] = None
-  override def inventory: List[Any] = List()
+  override def weaponSlot: Option[Weapon] = None
+  override def inventory: List[Usable] = List()
 
 /** Abstract base class for magic-user characters */
 abstract class AbstractMagicCharacter(

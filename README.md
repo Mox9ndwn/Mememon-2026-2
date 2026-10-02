@@ -1,33 +1,29 @@
 # Proyecto Semestral: Final Reality Tactics
 
-## Descripción del Proyecto
+(Tarea 1)
 
-Este repositorio contiene la plantilla base para el proyecto semestral del curso. El objetivo principal es desarrollar una versión simplificada de un juego de combate táctico, enfocado exclusivamente en la implementación de la lógica de negocio mediante el patrón arquitectónico **Modelo-Vista-Controlador (MVC)**. 
+**Curso:** CC3002 - Metodologías de Diseño y Programación
+**Autor:** Maximiliano Miranda
 
-En particular, a lo largo del semestre trabajarán en la construcción del **Modelo** (las entidades del juego como personajes, armas, paneles y sus interacciones mediante acciones) y el **Controlador** (el motor lógico encargado de gestionar los turnos, flujo del juego y reglas, como `GameController`). No se implementará una Vista gráfica (frontend), por lo que todo se basará en código Scala puro.
+----
 
-## Referencia Visual
+Este proyecto corresponde al programa simplificado para un juego de rol táctico por turnos inspirado en *Final Fantasy Tactics*, aplicando principios de Programación Orientada a Objetos (POO) y Desarrollo Guiado por Pruebas (TDD).
 
-Aunque el proyecto se evaluará mediante pruebas unitarias y lógica de consola sin necesidad de conectarlo a una interfaz web, aquí tienen una imagen del "front-end" conceptual del juego. Esto les servirá para hacerse una idea de cómo deberían verse estructurados lógicamente el mapa (en base a paneles) y sus unidades a lo largo de las entregas:
+**Nota sobre el alcance de la entrega:**
+Asumiendo completamente la responsabilidad y sabiendo que había sido desaconsejado insistentemente, cometí el desacierto de comenzar muy tarde el desarrollo del proyecto. Por lo que para evitar descuidar el diseño trabajando apresuradamente, esta entrega comprende la implementación completa, y 100% testeada tan solo de lo pedido en la Entrega Parcial 1. Asumiendo que esta tarea es acumulativa y que está directamente relacionada al resto de tareas que quedan del semestre, me comprometo firmemente a ponerme al día e integrar las funcionalidades restantes en el próximo avance del proyecto.
 
-![resultado.jpg](resultado.jpg)
 
-## Enunciado del Proyecto
+## Arquitectura y Decisiones de Diseño
 
-Las reglas completas del juego, las entidades requeridas y el detalle de cada entrega parcial y final pueden encontrarse en el enunciado oficial del proyecto.
+**Uso de traits como contratos puros:**
+Para seguir las reglas del curso, usamos los traits únicamente para definir qué deben hacer las distintas partes del juego, sin guardar variables ni escribir la lógica todavía
 
-[Link de ucursos del enunciado](https://www.u-cursos.cl/ingenieria/2026/2/CC3002/1/material_docente/detalle?id=10946097)
+**Clases abstractas para no repetir código:**
+Para no copiar y pegar el mismo código en cada personaje o arma, creamos clases abstractas intermedias que guardan las partes comunes:
+- AbstractCharacter y AbstractMagicCharacter: Tienen la lógica de la vida (currentHp), maná (currentMp) e inventario. Así, clases como Knight o BlackMage solo heredan esto y no tienen que reescribirlo.
+- AbstractWeapon y AbstractPotion: Guardan los datos comunes de las armas (puntos de ataque, peso, dueño) y pociones.
 
-## ¿Qué se estará evaluando?
-
-El trabajo a lo largo del semestre será evaluado principalmente en base a los siguientes tres pilares:
-
-1. **Diseño (50%)**: Se evaluará la calidad de su código, exigiendo que este cumpla con los principios de diseño orientado a objetos enseñados en el curso. Se espera un código extensible y con responsabilidades bien definidas.
-2. **Testing y Coverage (35%)**: Se evaluará que su código tenga pruebas automatizadas utilizando **MUnit** con una cobertura de al menos el 90% para obtener el puntaje completo. Las pruebas deben comprobar tanto los casos de uso esperados como los casos de borde (ej. fallos en restricciones de acciones).
-3. **Documentación (15%)**: Cada clase, interfaz (trait) y método público debe estar debidamente documentado usando el formato Scaladoc.
-
-## Cómo empezar
-
-1. Lean detenidamente el enunciado principal del proyecto.
-2. Exploren este código base. Encontrarán una clase inicial `GameController` en el paquete `controller` desde la cual podrán comenzar a articular su lógica.
-3. Asegúrense de usar herramientas de control de versiones (Git) de manera constante, documentando adecuadamente sus avances mediante *commits*.
+**Protección de los datos:**
+- Las variables que cambian (como la vida actual o el dueño de un arma) se guardaron como privadas para que no se puedan modificar directamente desde fuera.
+- Al pedir el inventario o la lista de unidades de un jugador, entregamos una copia inmutable (List). Así evitamos que alguien modifique la lista original por error.
+- No usamos isInstanceOf en ninguna parte del código, respetando el diseño polimórfico del curso.

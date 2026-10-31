@@ -2,6 +2,6 @@
 <project version="4">
   <component name="ScalaCompilerConfiguration">
     <option name="separateProdTestSources" value="true" />
-    <profile name="sbt 1" modules="cc3002-project,cc3002-project-template,cc3002-project-template.main,cc3002-project-template.test,cc3002-project.main,cc3002-project.test,template-mememon.cc3002-project-template,template-mememon.cc3002-project-template.main,template-mememon.cc3002-project-template.test" />
+    <profile name="sbt 1" modules="Mememon-2026-2.cc3002-project,Mememon-2026-2.cc3002-project.main,Mememon-2026-2.cc3002-project.test,cc3002-project,cc3002-project-template,cc3002-project-template.main,cc3002-project-template.test,cc3002-project.main,cc3002-project.test,template-mememon.cc3002-project-template,template-mememon.cc3002-project-template.main,template-mememon.cc3002-project-template.test" />
   </component>
 </project>

@@ -6,7 +6,7 @@ import units.{Knight, Enemy}
 
 class PlayerTest extends FunSuite:
   
-  test("A Player should initialize correctly with name and initial units") {
+  test("A Player should initialise correctly with name and initial units") {
     val knight = new Knight("Clive", maxHp = 100, defense = 15, weight = 20)
     val player = new Player("Player 1", List(knight))
 

@@ -34,7 +34,7 @@ class CharacterTest extends FunSuite:
     assert(!thief.isDefeated)
   }
 
-  test("A Black Mage should initialize correctly with mana points") {
+  test("A Black Mage should initialise correctly with mana points") {
     val blackMage = new BlackMage("Vivi", maxHp = 60, maxMp = 50, defense = 5, weight = 8)
     assertEquals(blackMage.name, "Vivi")
     assertEquals(blackMage.maxMp, 50)
@@ -42,7 +42,7 @@ class CharacterTest extends FunSuite:
     assert(!blackMage.isDefeated)
   }
 
-  test("A White Mage should initialize correctly with mana points") {
+  test("A White Mage should initialise correctly with mana points") {
     val whiteMage = new WhiteMage("Flora", maxHp = 55, maxMp = 60, defense = 6, weight = 7)
 
     assertEquals(whiteMage.name, "Flora")
@@ -51,7 +51,7 @@ class CharacterTest extends FunSuite:
     assert(!whiteMage.isDefeated)
   }
 
-  test("An Enemy should initialize correctly with attack points") {
+  test("An Enemy should initialise correctly with attack points") {
     val goblin = new Enemy("Guard Hound", maxHp = 30, attack = 12, defense = 4, weight = 6)
 
     assertEquals(goblin.name, "Guard Hound")

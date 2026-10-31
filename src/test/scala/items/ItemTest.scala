@@ -19,7 +19,7 @@ class ItemTest extends FunSuite:
     assertEquals(bow.attackPoints, 25)
   }
   
-  test("Magic weapons should initialize correctly with magic attack points") {
+  test("Magic weapons should initialise correctly with magic attack points") {
     val wand = new Wand("Star Rod", attackPoints = 10, magicAttackPoints = 30, weight = 5)
     val staff = new Staff("Mage Staff", attackPoints = 12, magicAttackPoints = 35, weight = 7)
 
@@ -40,7 +40,7 @@ class ItemTest extends FunSuite:
     assertEquals(sword.owner, Some(knight))
   }
   
-  test("Potions should initialize correctly with their names") {
+  test("Potions should initialise correctly with their names") {
     val healing = new HealingPotion()
     val fortitude = new FortitudePotion()
     val mana = new ManaPotion()

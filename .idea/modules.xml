@@ -2,6 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Mememon-2026-2/Mememon-2026-2.cc3002-project.iml" filepath="$PROJECT_DIR$/.idea/modules/Mememon-2026-2/Mememon-2026-2.cc3002-project.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Mememon-2026-2/Mememon-2026-2.cc3002-project.cc3002-project-build.iml" filepath="$PROJECT_DIR$/.idea/modules/Mememon-2026-2/Mememon-2026-2.cc3002-project.cc3002-project-build.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Mememon-2026-2/Mememon-2026-2.cc3002-project.main.iml" filepath="$PROJECT_DIR$/.idea/modules/Mememon-2026-2/Mememon-2026-2.cc3002-project.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Mememon-2026-2/Mememon-2026-2.cc3002-project.test.iml" filepath="$PROJECT_DIR$/.idea/modules/Mememon-2026-2/Mememon-2026-2.cc3002-project.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/template-mememon/cc3002-project.iml" filepath="$PROJECT_DIR$/.idea/modules/template-mememon/cc3002-project.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/cc3002-project-template.iml" filepath="$PROJECT_DIR$/.idea/modules/cc3002-project-template.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/cc3002-project-template/cc3002-project-template.cc3002-project-template-build.iml" filepath="$PROJECT_DIR$/.idea/modules/cc3002-project-template/cc3002-project-template.cc3002-project-template-build.iml" />

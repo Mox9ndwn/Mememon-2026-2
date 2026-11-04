@@ -1,8 +1,9 @@
 package cl.uchile.dcc
 package combat
 
-import units.{GameUnit, Character}
-import scala.collection.mutable.{ListBuffer, Map as MutableMap}
+import units.{Character, GameUnit}
+import scala.collection.mutable
+import scala.collection.mutable.ListBuffer
 
 /** Pure contract for managing turns and action bars in combat */
 trait Scheduler:
@@ -21,7 +22,7 @@ trait Scheduler:
 class TurnScheduler extends Scheduler:
 
   private val _units: ListBuffer[GameUnit] = ListBuffer()
-  private val _actionBars: MutableMap[GameUnit, Int] = MutableMap()
+  private val _actionBars: mutable.Map[GameUnit, Int] = mutable.Map()
 
   override def units: List[GameUnit] = _units.toList
 

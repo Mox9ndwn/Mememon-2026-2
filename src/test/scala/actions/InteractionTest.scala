@@ -70,3 +70,38 @@ class InteractionTest extends FunSuite:
     assertEquals(targetPanel.units.length, 1)
     assertEquals(targetPanel.units.head, knight)
   }
+
+  test("A defeated unit should not be able to perform any action") {
+    import exceptions.DefeatedUnitException
+    val knight = new Knight("Fallen Cecil", maxHp = 100, defense = 10, weight = 20)
+    val goblin = new Enemy("Goblin", maxHp = 50, attack = 10, defense = 5, weight = 10)
+    val attack = new Attack()
+    knight.addAction(attack)
+
+    // Receive lethal damage
+    knight.receiveAttack(200)
+    assert(knight.isDefeated)
+
+    // Attempting to act must throw DefeatedUnitException
+    intercept[DefeatedUnitException] {
+      knight.doAction(attack, goblin)
+    }
+  }
+
+  test("A defeated unit should mot be able to receive any action") {
+    import exceptions.InvalidTargetException
+    val knight = new Knight("King Arthur", maxHp = 100, defense = 10, weight = 20)
+    val sword = new items.Sword("Excalibur", attackPoints = 30, weight = 10)
+    knight.equip(sword)
+    val attack = new Attack()
+    knight.addAction(attack)
+
+    val fallenGoblin = new Enemy("Gobbledygook", maxHp = 30, attack = 10, defense = 2, weight = 10)
+    fallenGoblin.receiveAttack(100)
+    assert(fallenGoblin.isDefeated)
+
+    // Attacking a defended target must throw InvalidTargetException
+    intercept[InvalidTargetException] {
+      knight.doAction(attack, fallenGoblin)
+    }
+  }

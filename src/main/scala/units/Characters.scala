@@ -4,6 +4,7 @@ package units
 import scala.collection.mutable.ListBuffer
 import items.{Usable, Weapon}
 import actions.{Action, Source, Target}
+import exceptions.{DefeatedUnitException, InvalidTargetException}
 
 
 /** Represents a generic game unit capable of being both a source and target of actions*/
@@ -41,10 +42,15 @@ abstract class AbstractGameUnit(
   override def findAction(actionName: String): Option[Action] =
     _actions.find(_.name == actionName)
 
-  override def doAction(action: Action, target: Target): Unit =
+  override def doAction(action: Action, target: Target): Unit = {
+    if isDefeated then
+      throw new DefeatedUnitException(s"Unit $name camnot perform any action ${action.name} because it is defeated")
     action.execute(this, target)
+  }
 
   override def receiveAttack(incomingDamage: Int): Unit =
+    if isDefeated then
+      throw new InvalidTargetException(s"Unit $name cannot receive an attack because it is already defeated ")
     val effectiveDamage = math.max(0, incomingDamage - defense)
     currentHp = currentHp - effectiveDamage
 

@@ -5,6 +5,7 @@ import scala.collection.mutable.ListBuffer
 import items.{Usable, Weapon}
 import actions.{Action, Source, Target}
 
+
 /** Represents a generic game unit capable of being both a source and target of actions*/
 trait GameUnit extends Source with Target:
   def name: String
@@ -76,11 +77,6 @@ abstract class AbstractCharacter(
   override def attackDamage: Int =
     _weaponSlot.map(_.attackPoints).getOrElse(0)
 
-  /**
-  private var _currentHp: Int = maxHp
-  override def currentHp: Int = _currentHp
-  override def isDefeated: Boolean = _currentHp <= 0
-  */
 
 /** Represents a magic-user character */
 trait MagicCharacter extends Character:
@@ -131,11 +127,3 @@ class Enemy(
            ) extends AbstractGameUnit(name, maxHp, defense, weight):
 
   override def attackDamage: Int = attack
-
-  /**
-  private var _currentHp: Int = maxHp
-
-  override def currentHp: Int = _currentHp
-  override def isDefeated: Boolean = _currentHp <= 0
-
-   */

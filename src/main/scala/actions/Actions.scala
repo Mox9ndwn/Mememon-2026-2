@@ -2,18 +2,21 @@ package cl.uchile.dcc
 package actions
 
 import items.{Usable, Weapon, Potion}
+import units.GameUnit
 import scala.collection.mutable.ListBuffer
 
 /** Pure contract representing an in-game action */
 trait Action:
   def name: String
+  def execute(source: Source, target: Target): Unit
 
 /** Trait for actions that involve a list of usable items */
 trait UsableItemAction[T <: Usable] extends Action:
   def usableItems: List[T]
 
 /** Abstract base class for all actions */
-abstract class AbstractAction(val name: String) extends Action
+abstract class AbstractAction(val name: String) extends Action:
+  override def execute(source: Source, target: Target): Unit = ()
 
 /** Abstract base class for actions that interact with usable items */
 abstract class AbstractUsableItemAction[T <: Usable](
@@ -28,8 +31,19 @@ abstract class AbstractUsableItemAction[T <: Usable](
 
 // Basic Actions
 
-class Attack(name: String = "Attack") extends AbstractAction(name)
-class Move(name: String = "Move") extends AbstractAction(name)
+class Attack(name: String = "Attack") extends AbstractAction(name):
+  override def execute(source: Source, target: Target): Unit =
+    val rawDamage = source match
+      case unit: GameUnit => unit.attackDamage
+      case _ => 0
+    target.receiveAttack(rawDamage)
+
+class Move(name: String = "Move") extends AbstractAction(name):
+  override def execute(source: Source, target: Target): Unit =
+    source match {
+      case unit: GameUnit => target.receiveMove(unit)
+      case _ => ()
+    }
 
 
 // Usable Item Actions

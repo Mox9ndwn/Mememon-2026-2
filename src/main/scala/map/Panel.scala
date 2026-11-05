@@ -1,11 +1,12 @@
 package cl.uchile.dcc
 package map
 
+import actions.Target
 import units.GameUnit
 import scala.collection.mutable.ListBuffer
 
 /** Pure contract representing a game tile/panel on the map */
-trait GamePanel:
+trait GamePanel extends Target:
   def x: Int
   def y: Int
   def units: List[GameUnit]
@@ -13,6 +14,7 @@ trait GamePanel:
   def addUnit(unit: GameUnit): Unit
   def removeUnit(unit: GameUnit): Unit
   def addNeighbor(neighbor: GamePanel): Unit
+  def receiveMove(unit: GameUnit): Unit
 
 /** Concrete implementation of a map panel */
 class Panel(val x: Int, val y: Int) extends GamePanel:
@@ -37,3 +39,7 @@ class Panel(val x: Int, val y: Int) extends GamePanel:
   /** Links a neighboring panel to this panel */
   override def addNeighbor(neighbor: GamePanel): Unit =
     if neighbor != this && !_neighbors.contains(neighbor) then _neighbors += neighbor
+
+  /** Handles receiving a unit onto this panel as the target of a Move action */
+  override def receiveMove(unit: GameUnit): Unit =
+    addUnit(unit)

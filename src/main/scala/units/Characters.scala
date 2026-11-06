@@ -2,9 +2,10 @@ package cl.uchile.dcc
 package units
 
 import scala.collection.mutable.ListBuffer
-import items.{Usable, Weapon}
+import items.{Bow, Dagger, Staff, Sword, Usable, Wand, Weapon}
 import actions.{Action, Source, Target}
 import exceptions.{DefeatedUnitException, InvalidTargetException}
+import exceptions.{IncompatibleWeaponException, MissingWeaponException}
 
 
 /** Represents a generic game unit capable of being both a source and target of actions*/
@@ -59,6 +60,11 @@ trait Character extends GameUnit:
   def weaponSlot: Option[Weapon]
   def inventory: List[Usable]
   def equip(weapon: Weapon): Unit
+  def equipSword(sword: items.Sword): Unit
+  def equipDagger(dagger: items.Dagger): Unit
+  def equipBow(bow: items.Bow): Unit
+  def equipWand(wand: items.Wand): Unit
+  def equipStaff(staff: items.Staff): Unit
 
 /** Abstract base class sharing common character state and behaviour */
 abstract class AbstractCharacter(
@@ -75,13 +81,34 @@ abstract class AbstractCharacter(
 
   override def inventory: List[Usable] = _inventory
 
-  override def equip(weapon: Weapon): Unit = {
+  override def attackDamage: Int =
+    _weaponSlot.map(_.attackPoints).getOrElse(0)
+
+  // Helper method to assign the weapon once validated
+  protected def setEquipped(weapon: Weapon): Unit = {
     _weaponSlot = Some(weapon)
     weapon.setOwner(Some(this))
   }
 
-  override def attackDamage: Int =
-    _weaponSlot.map(_.attackPoints).getOrElse(0)
+  // Double dispatch entry point
+  override def equip(weapon: Weapon): Unit =
+    weapon.equipTo(this)
+
+  //Default behaviours: throw IncompatibleWeaponException unless overridden by allowed classes
+  override def equipSword(sword: Sword): Unit =
+    throw new IncompatibleWeaponException(s"$name cannot equip swords")
+
+  override def equipDagger(dagger: Dagger): Unit =
+    throw new IncompatibleWeaponException(s"$name cannot equip daggers")
+
+  override def equipBow(bow: Bow): Unit =
+    throw new IncompatibleWeaponException(s"$name cannot equip bows")
+
+  override def equipWand(wand: Wand): Unit =
+    throw new IncompatibleWeaponException(s"$name cannot equip wands")
+
+  override def equipStaff(staff: Staff): Unit =
+    throw new IncompatibleWeaponException(s"$name cannot equip staffs")
 
 
 /** Represents a magic-user character */
@@ -107,19 +134,33 @@ abstract class AbstractMagicCharacter(
 // Concrete Character Classes
 
 /** Knight character class */
-class Knight(name: String, maxHp: Int, defense: Int, weight: Int) extends AbstractCharacter(name, maxHp, defense, weight)
+class Knight(name: String, maxHp: Int, defense: Int, weight: Int) extends AbstractCharacter(name, maxHp, defense, weight):
+  override def equipSword(sword: items.Sword): Unit = setEquipped(sword)
+  override def equipDagger(dagger: items.Dagger): Unit = setEquipped(dagger)
+  override def equipBow(bow: items.Bow): Unit = setEquipped(bow)
 
 /** Archer character class */
-class Archer(name: String, maxHp: Int, defense: Int, weight: Int) extends AbstractCharacter(name, maxHp, defense, weight)
+class Archer(name: String, maxHp: Int, defense: Int, weight: Int) extends AbstractCharacter(name, maxHp, defense, weight):
+  override def equipSword(sword: items.Sword): Unit = setEquipped(sword)
+  override def equipBow(bow: items.Bow): Unit = setEquipped(bow)
+  override def equipWand(wand: items.Wand): Unit = setEquipped(wand)
 
 /** Thief character class */
-class Thief(name: String, maxHp: Int, defense: Int, weight: Int) extends AbstractCharacter(name, maxHp, defense, weight)
+class Thief(name: String, maxHp: Int, defense: Int, weight: Int) extends AbstractCharacter(name, maxHp, defense, weight):
+  override def equipSword(sword: items.Sword): Unit = setEquipped(sword)
+  override def equipDagger(dagger: items.Dagger): Unit = setEquipped(dagger)
 
 /** Black Mage character class */
-class BlackMage(name: String, maxHp: Int, maxMp: Int, defense: Int, weight: Int) extends AbstractMagicCharacter(name, maxHp, maxMp, defense, weight)
+class BlackMage(name: String, maxHp: Int, maxMp: Int, defense: Int, weight: Int) extends AbstractMagicCharacter(name, maxHp, maxMp, defense, weight):
+  override def equipDagger(dagger: items.Dagger): Unit = setEquipped(dagger)
+  override def equipWand(wand: items.Wand): Unit = setEquipped(wand)
+  override def equipStaff(staff: items.Staff): Unit = setEquipped(staff)
 
 /** White Mage character class */
-class WhiteMage(name: String, maxHp: Int, maxMp: Int, defense: Int, weight: Int) extends AbstractMagicCharacter(name, maxHp, maxMp, defense, weight)
+class WhiteMage(name: String, maxHp: Int, maxMp: Int, defense: Int, weight: Int) extends AbstractMagicCharacter(name, maxHp, maxMp, defense, weight):
+  override def equipBow(bow: items.Bow): Unit = setEquipped(bow)
+  override def equipWand(wand: items.Wand): Unit = setEquipped(wand)
+  override def equipStaff(staff: items.Staff): Unit = setEquipped(staff)
 
 // Enemy Unit Class
 

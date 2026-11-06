@@ -24,7 +24,7 @@ class GameControllerTest extends FunSuite:
   test("GameController should determinate current turn and advance to next turn") {
     val controller = new GameController()
     val fastEnemy = new Enemy("Celia", maxHp = 30, attack = 10, defense = 2, weight = 10)
-    val slowKnight = new Knight("Ramza", maxHp = 100, defense = 10, weight = 25)
+    val slowKnight = new Knight("Ramza", maxHp = 100, defense = 10, weight = 15)
     
     controller.addUnit(fastEnemy)
     controller.addUnit(slowKnight)

@@ -1,8 +1,11 @@
 package cl.uchile.dcc
 package actions
 
-import items.{Usable, Weapon, Potion}
+import items.{Potion, Usable, Weapon}
 import units.GameUnit
+
+import cl.uchile.dcc.exceptions.MissingWeaponException
+
 import scala.collection.mutable.ListBuffer
 
 /** Pure contract representing an in-game action */
@@ -33,10 +36,12 @@ abstract class AbstractUsableItemAction[T <: Usable](
 
 class Attack(name: String = "Attack") extends AbstractAction(name):
   override def execute(source: Source, target: Target): Unit =
-    val rawDamage = source match
-      case unit: GameUnit => unit.attackDamage
-      case _ => 0
-    target.receiveAttack(rawDamage)
+    source match {
+      case c: units.Character if c.weaponSlot.isEmpty =>
+        throw new MissingWeaponException(s"Character ${c.name} cannot attack without an equipped weapon")
+      case unit: units.GameUnit =>
+        target.receiveAttack(unit.attackDamage)
+    }
 
 class Move(name: String = "Move") extends AbstractAction(name):
   override def execute(source: Source, target: Target): Unit =

@@ -13,6 +13,7 @@ trait Weapon extends Usable:
   def weight: Int
   def owner: Option[Character]
   def setOwner(newOwner: Option[Character]): Unit
+  def equipTo(character: Character): Unit
 
 /** Interface for magic weapons */
 trait MagicWeapon extends Weapon:
@@ -29,12 +30,14 @@ abstract class AbstractWeapon(
                              val name: String,
                              val attackPoints: Int,
                              val weight: Int,
-                             private var _owner: Option[Character] = None
                              ) extends Weapon:
+
+  private var _owner: Option[Character] = None
 
   override def owner: Option[Character] = _owner
 
-  override def setOwner(newOwner: Option[Character]): Unit = _owner = newOwner
+  override def setOwner(newOwner: Option[Character]): Unit =
+    _owner = newOwner
   
 /** Abstract base class for magic weapons */
 abstract class AbstractMagicWeapon(
@@ -42,17 +45,25 @@ abstract class AbstractMagicWeapon(
                                   attackPoints: Int,
                                   val magicAttackPoints: Int,
                                   weight: Int,
-                                  owner: Option[Character] = None
-                                  ) extends AbstractWeapon(name, attackPoints, weight, owner) with MagicWeapon
+                                  ) extends AbstractWeapon(name, attackPoints, weight) with MagicWeapon
   
 
 // Concrete Weapon Classes
 
-class Sword(name: String, attackPoints: Int, weight: Int, owner: Option[Character] = None) extends AbstractWeapon(name, attackPoints, weight, owner)
-class Dagger(name: String, attackPoints: Int, weight: Int, owner: Option[Character] = None) extends AbstractWeapon(name, attackPoints, weight, owner)
-class Bow(name: String, attackPoints: Int, weight: Int, owner: Option[Character] = None) extends AbstractWeapon(name, attackPoints, weight, owner)
-class Wand(name: String, attackPoints: Int, magicAttackPoints: Int, weight: Int, owner: Option[Character] = None) extends AbstractMagicWeapon(name, attackPoints, magicAttackPoints, weight, owner)
-class Staff(name: String, attackPoints: Int, magicAttackPoints: Int, weight: Int, owner: Option[Character] = None) extends AbstractMagicWeapon(name, attackPoints, magicAttackPoints, weight, owner)
+class Sword(name: String, attackPoints: Int, weight: Int) extends AbstractWeapon(name, attackPoints, weight):
+  override def equipTo(character: Character): Unit = character.equipSword(this)
+  
+class Dagger(name: String, attackPoints: Int, weight: Int) extends AbstractWeapon(name, attackPoints, weight):
+  override def equipTo(character: Character): Unit = character.equipDagger(this)
+  
+class Bow(name: String, attackPoints: Int, weight: Int) extends AbstractWeapon(name, attackPoints, weight):
+  override def equipTo(character: Character): Unit = character.equipBow(this)
+  
+class Wand(name: String, attackPoints: Int, magicAttackPoints: Int, weight: Int) extends AbstractMagicWeapon(name, attackPoints, magicAttackPoints, weight):
+  override def equipTo(character: Character): Unit = character.equipWand(this)
+
+class Staff(name: String, attackPoints: Int, magicAttackPoints: Int, weight: Int) extends AbstractMagicWeapon(name, attackPoints, magicAttackPoints, weight):
+  override def equipTo(character: Character): Unit = character.equipStaff(this)
 
 
 // Potion Classes

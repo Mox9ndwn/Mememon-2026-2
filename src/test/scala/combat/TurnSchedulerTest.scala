@@ -35,7 +35,7 @@ class TurnSchedulerTest extends FunSuite:
     val fastUnit = new Enemy("Fast Goblin", maxHp = 30, attack = 10, defense = 2, weight = 10)
     
     scheduler.addUnit(slowUnit)
-    scheduler.addUnit(slowUnit)
+    scheduler.addUnit(fastUnit)
     
     // Both start at 0
     assertEquals(scheduler.currentActionBar(slowUnit), 0)
@@ -49,7 +49,7 @@ class TurnSchedulerTest extends FunSuite:
     
     // The goblin filled its bar (15 >= 10), the knight did not (15 < 30)
     assert(!scheduler.hasCompletedActionBar(slowUnit))
-    assert(!scheduler.hasCompletedActionBar(fastUnit))
+    assert(scheduler.hasCompletedActionBar(fastUnit))
   }
   
   test("TurnScheduler should order completed units by surplus and determine the current turn") {

@@ -6,6 +6,7 @@ import items.{Bow, Dagger, Staff, Sword, Usable, Wand, Weapon}
 import actions.{Action, Source, Target}
 import exceptions.{DefeatedUnitException, InvalidTargetException}
 import exceptions.{IncompatibleWeaponException, MissingWeaponException}
+import exceptions.InsufficientManaException
 
 
 /** Represents a generic game unit capable of being both a source and target of actions*/
@@ -45,13 +46,13 @@ abstract class AbstractGameUnit(
 
   override def doAction(action: Action, target: Target): Unit = {
     if isDefeated then
-      throw new DefeatedUnitException(s"Unit $name camnot perform any action ${action.name} because it is defeated")
+      throw new DefeatedUnitException(s"Unit $name camnot perform any action ${action.name} because it is defeated.")
     action.execute(this, target)
   }
 
   override def receiveAttack(incomingDamage: Int): Unit =
     if isDefeated then
-      throw new InvalidTargetException(s"Unit $name cannot receive an attack because it is already defeated ")
+      throw new InvalidTargetException(s"Unit $name cannot receive an attack because it is already defeated.")
     val effectiveDamage = math.max(0, incomingDamage - defense)
     currentHp = currentHp - effectiveDamage
 
@@ -96,25 +97,32 @@ abstract class AbstractCharacter(
 
   //Default behaviours: throw IncompatibleWeaponException unless overridden by allowed classes
   override def equipSword(sword: Sword): Unit =
-    throw new IncompatibleWeaponException(s"$name cannot equip swords")
+    throw new IncompatibleWeaponException(s"$name cannot equip swords.")
 
   override def equipDagger(dagger: Dagger): Unit =
-    throw new IncompatibleWeaponException(s"$name cannot equip daggers")
+    throw new IncompatibleWeaponException(s"$name cannot equip daggers.")
 
   override def equipBow(bow: Bow): Unit =
-    throw new IncompatibleWeaponException(s"$name cannot equip bows")
+    throw new IncompatibleWeaponException(s"$name cannot equip bows.")
 
   override def equipWand(wand: Wand): Unit =
-    throw new IncompatibleWeaponException(s"$name cannot equip wands")
+    throw new IncompatibleWeaponException(s"$name cannot equip wands.")
 
   override def equipStaff(staff: Staff): Unit =
-    throw new IncompatibleWeaponException(s"$name cannot equip staffs")
+    throw new IncompatibleWeaponException(s"$name cannot equip staffs.")
+
+  // Method to receive Heal
+  override def receiveHeal(amount: Int): Unit =
+    if isDefeated then
+      throw new InvalidTargetException(s"$name cannot be healed because it is defeated.")
+    currentHp = currentHp + amount
 
 
 /** Represents a magic-user character */
 trait MagicCharacter extends Character:
   def maxMp: Int
   def currentMp: Int
+  def consumeMp(amount: Int): Unit
 
 /** Abstract base class for magic-user characters */
 abstract class AbstractMagicCharacter(
@@ -129,6 +137,11 @@ abstract class AbstractMagicCharacter(
   override def currentMp: Int = _currentMp
   protected def currentMp_=(newMp: Int): Unit =
     _currentMp = math.max(0, math.min(newMp, maxMp))
+
+  override def consumeMp(amount: Int): Unit =
+    if _currentMp < amount then
+      throw new InsufficientManaException(s"$name has insufficient mana (required: $amount, current: ${_currentMp}")
+    _currentMp -= amount
 
 
 // Concrete Character Classes
@@ -174,3 +187,7 @@ class Enemy(
            ) extends AbstractGameUnit(name, maxHp, defense, weight):
 
   override def attackDamage: Int = attack
+
+  // Method to receive Purify
+  override def receivePurify(damage: Int): Unit =
+    receiveAttack(damage)

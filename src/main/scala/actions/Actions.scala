@@ -2,7 +2,7 @@ package cl.uchile.dcc
 package actions
 
 import items.{Potion, Usable, Weapon}
-import units.GameUnit
+import units.{GameUnit, MagicCharacter}
 
 import cl.uchile.dcc.exceptions.MissingWeaponException
 
@@ -60,9 +60,39 @@ class UsePotion(initialPotions: List[Potion] = List(), name: String = "Use Potio
 
 // Spell/Skill Actions
 
-abstract class Spell(name: String) extends AbstractAction(name)
+abstract class Spell(name: String, val manaCost: Int = 10) extends AbstractAction(name):
+  override def execute(source: Source, target: Target): Unit =
+    source match {
+      case caster: units.MagicCharacter =>
+        caster.weaponSlot match {
+          case Some(_: items.MagicWeapon) =>
+            caster.consumeMp(manaCost)
+            castSpell(caster, target)
+          case _ =>
+            throw new exceptions.MissingWeaponException(s"${caster.name} must have a MagicWeapon equipped to cast spells.")
+        }
+      case other =>
+        throw new exceptions.MissingWeaponException(s"Source ${other.name} cannot cast spells.")
+    }
 
-class Thunder(name: String = "Thunder") extends Spell(name)
-class Meteor(name: String = "Meteor") extends Spell(name)
-class Heal(name: String = "Heal") extends Spell(name)
-class Purify(name: String = "Purify") extends Spell(name)
+  protected def castSpell(caster: units.MagicCharacter, target: Target): Unit
+
+class Thunder(manaCost: Int = 15, name: String = "Thunder") extends Spell(name, manaCost):
+  override protected def castSpell(caster: units.MagicCharacter, target: Target): Unit =
+    val spellPower = caster.weaponSlot.collect {case mw: items.MagicWeapon => mw.magicAttackPoints}.getOrElse(25)
+    target.receiveAttack(spellPower)
+
+class Meteor(manaCost: Int = 25, name: String = "Meteor") extends Spell(name, manaCost):
+  override protected def castSpell(caster: units.MagicCharacter, target: Target): Unit =
+    val spellPower = caster.weaponSlot.collect {case mw: items.MagicWeapon => mw.magicAttackPoints}.getOrElse(35)
+    target.receiveAttack(spellPower)
+
+class Heal(manaCost: Int = 10, name: String = "Heal") extends Spell(name, manaCost):
+  override protected def castSpell(caster: units.MagicCharacter, target: Target): Unit =
+    val healPower = caster.weaponSlot.collect {case mw: items.MagicWeapon => mw.magicAttackPoints}.getOrElse(15)
+    target.receiveHeal(healPower)
+
+class Purify(manaCost: Int = 10,name: String = "Purify") extends Spell(name, manaCost):
+  override protected def castSpell(caster: units.MagicCharacter, target: Target): Unit =
+    val spellPower = caster.weaponSlot.collect {case mw: items.MagicWeapon => mw.magicAttackPoints}.getOrElse(20)
+    target.receivePurify(spellPower)

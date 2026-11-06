@@ -2,6 +2,7 @@ package cl.uchile.dcc
 package actions
 
 import units.GameUnit
+import exceptions.InvalidTargetException
 
 /** Represents an entity capable of initiating and executing actions */
 trait Source:
@@ -15,3 +16,9 @@ trait Source:
 trait Target:
   def receiveAttack(damage: Int): Unit = ()
   def receiveMove(unit: GameUnit): Unit = ()
+
+  def receiveHeal(amount: Int): Unit =
+    throw new InvalidTargetException("This target cannot receive Heal.")
+
+  def receivePurify(damage: Int): Unit =
+    throw new InvalidTargetException("This target cannot receive Purify.")

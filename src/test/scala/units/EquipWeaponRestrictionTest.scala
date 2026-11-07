@@ -1,10 +1,11 @@
 package cl.uchile.dcc
 package units
 
-import munit.FunSuite
-import items.{Sword, Dagger, Bow, Wand, Staff}
 import actions.Attack
 import exceptions.{IncompatibleWeaponException, MissingWeaponException}
+import items.{Sword, Wand}
+
+import munit.FunSuite
 
 class EquipWeaponRestrictionTest extends FunSuite:
 

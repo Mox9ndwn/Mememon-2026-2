@@ -1,10 +1,9 @@
 package cl.uchile.dcc
 package actions
 
+import exceptions.MissingWeaponException
 import items.{Potion, Usable, Weapon}
-import units.{GameUnit, MagicCharacter}
-
-import cl.uchile.dcc.exceptions.MissingWeaponException
+import units.GameUnit
 
 import scala.collection.mutable.ListBuffer
 

@@ -1,15 +1,19 @@
 package cl.uchile.dcc
 package controller
 
-import units.GameUnit
-import actions.{Action, Source, Target}
+import actions.{Action, Target}
 import combat.TurnScheduler
+import exceptions.GameRuleException
+import units.GameUnit
 
 
-/** Manages tge overarching game flow, turn scheduling and action delegation */
+/** Manages the overarching game flow, turn scheduling and action delegation */
 class GameController:
 
   private val scheduler = new TurnScheduler()
+  private var _lastErrorMessage: Option[String] = None
+
+  def lastErrorMessage: Option[String] = _lastErrorMessage
 
   /** Returns an immutable list of units currently in the game */
   def units: List[GameUnit] = scheduler.units
@@ -41,11 +45,20 @@ class GameController:
   def availableActions(unit: GameUnit): List[Action] =
     unit.actions
 
-  /** Executes an action performed by a source until targeting an entity */
-  def performAction(source: GameUnit, action: Action, target: Target): Unit =
-    source.doAction(action, target)
+  /** Executes an action performed by a source until targeting an entity, safely handling rule violations */
+  def performAction(source: GameUnit, action: Action, target: Target): Boolean =
+    try {
+      source.doAction(action, target)
+      _lastErrorMessage = None
+      true
+    }
+    catch
+      case ex: GameRuleException =>
+        _lastErrorMessage = Some(ex.getMessage)
+        false
 
   /** Resets the game to its initial empty state */
   def resetGame(): Unit =
+    _lastErrorMessage = None
     for u <- scheduler.units do
       scheduler.removeUnit(u)

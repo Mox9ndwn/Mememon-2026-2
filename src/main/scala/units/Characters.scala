@@ -1,12 +1,11 @@
 package cl.uchile.dcc
 package units
 
-import scala.collection.mutable.ListBuffer
-import items.{Bow, Dagger, Staff, Sword, Usable, Wand, Weapon}
 import actions.{Action, Source, Target}
-import exceptions.{DefeatedUnitException, InvalidTargetException}
-import exceptions.{IncompatibleWeaponException, MissingWeaponException}
-import exceptions.InsufficientManaException
+import exceptions.{DefeatedUnitException, IncompatibleWeaponException, InsufficientManaException, InvalidTargetException}
+import items.*
+
+import scala.collection.mutable.ListBuffer
 
 
 /** Represents a generic game unit capable of being both a source and target of actions*/
@@ -18,6 +17,8 @@ trait GameUnit extends Source with Target:
   def weight: Int
   def attackDamage: Int
   def isDefeated: Boolean
+  def currentPanel: Option[map.GamePanel]
+  def setPanel(panel: Option[map.GamePanel]): Unit
 
 /** Abstract base class sharing common unit state and behaviours */
 abstract class AbstractGameUnit(
@@ -46,7 +47,7 @@ abstract class AbstractGameUnit(
 
   override def doAction(action: Action, target: Target): Unit = {
     if isDefeated then
-      throw new DefeatedUnitException(s"Unit $name camnot perform any action ${action.name} because it is defeated.")
+      throw new DefeatedUnitException(s"Unit $name cannot perform any action ${action.name} because it is defeated.")
     action.execute(this, target)
   }
 
@@ -55,6 +56,13 @@ abstract class AbstractGameUnit(
       throw new InvalidTargetException(s"Unit $name cannot receive an attack because it is already defeated.")
     val effectiveDamage = math.max(0, incomingDamage - defense)
     currentHp = currentHp - effectiveDamage
+
+  private var _currentPanel: Option[map.GamePanel] = None
+
+  override def currentPanel: Option[map.GamePanel] = _currentPanel
+
+  override def setPanel(panel: Option[map.GamePanel]): Unit =
+    _currentPanel = panel
 
 /** Represents a controllable character in the game */
 trait Character extends GameUnit:

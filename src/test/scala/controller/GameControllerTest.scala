@@ -1,11 +1,11 @@
 package cl.uchile.dcc
 package controller
 
-import munit.FunSuite
-import units.{Knight, Enemy}
-import actions.{Attack, Move}
+import actions.Attack
 import items.Sword
-import map.Panel
+import units.{Enemy, Knight}
+
+import munit.FunSuite
 
 class GameControllerTest extends FunSuite:
   
@@ -70,4 +70,20 @@ class GameControllerTest extends FunSuite:
     controller.resetGame()
     assertEquals(controller.units, List())
     assertEquals(controller.currentTurnUnit, None)
+  }
+
+  test("GameController performAction should gracefully catch GameRuleException and report failure") {
+    val controller = new GameController()
+    val unarmedKnight = new Knight("Basch", maxHp = 100, defense = 10, weight = 20)
+    val goblin = new Enemy("Goblin", maxHp = 50, attack = 10, defense = 5, weight = 10)
+    val attack = new actions.Attack()
+    unarmedKnight.addAction(attack)
+
+    controller.addUnit(unarmedKnight)
+    controller.addUnit(goblin)
+
+    // Unarmed attack throws MissingWeaponException, but performAction should catch it
+    val success = controller.performAction(unarmedKnight, attack, goblin)
+    assertEquals(success, false)
+    assert(controller.lastErrorMessage.isDefined)
   }
